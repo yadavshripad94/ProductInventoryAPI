@@ -1,0 +1,181 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+  <div>
+    <h2 class="mb-1">Products</h2>
+
+    <p class="text-secondary mb-0">
+      Search, filter, update, and manage inventory.
+    </p>
+  </div>
+
+  <a
+    routerLink="/products/add"
+    class="btn btn-success">
+    + Add Product
+  </a>
+
+</div>
+
+@if (store.errorMessage()) {
+  <div class="alert alert-danger">
+    {{ store.errorMessage() }}
+  </div>
+}
+
+<div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <div class="row g-3 align-items-end">
+
+      <div class="col-md-6">
+        <label class="form-label">
+          Search Product
+        </label>
+
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Enter product name"
+          [ngModel]="searchText()"
+          (ngModelChange)="onSearchChange($event)">
+
+      </div>
+
+      <div class="col-md-4">
+
+        <label class="form-label">
+          Category
+        </label>
+
+        <select
+          class="form-select"
+          [ngModel]="selectedCategory()"
+          (ngModelChange)="onCategoryChange($event)">
+
+          @for (category of categories(); track category ) {
+
+            <option [value]="category">
+              {{ category }}
+            </option>
+
+          }
+
+        </select>
+      </div>
+
+      <div class="col-md-2 d-grid">
+
+        <button
+          class="btn btn-outline-secondary"
+          (click)="refresh()">
+          Refresh
+        </button>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+@if (store.isLoading()) {
+
+  <div class="alert alert-info">
+    Loading products...
+  </div>
+
+} @else {
+
+  <div class="card shadow-sm">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Name</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>Stock</th>
+              <th>Status</th>
+              <th class="text-end">
+                Actions
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            @for (product of filteredProducts(); track product.id) {
+
+              <tr>
+                <td class="fw-semibold">
+                  {{ product.name }}
+                </td>
+
+                <td>
+                  {{ product.category }}
+                </td>
+
+                <td>
+                  {{ product.price | currency:'INR' }}
+                </td>
+
+                <td>
+                  {{ product.stockQuantity }}
+                </td>
+
+                <td>
+
+                  @if (product.isActive) {
+                    <span class="badge text-bg-success">
+                      Active
+                    </span>
+
+                  } @else {
+                    <span class="badge text-bg-secondary">
+                      Inactive
+                    </span>
+                  }
+
+                </td>
+
+                <td class="text-end text-nowrap">
+            
+                  <a
+                    class="btn btn-sm btn-outline-primary me-2"
+                    [routerLink]="[
+                      '/products/edit',
+                      product.id
+                    ]">
+                    Edit
+                  </a>
+
+                 
+                  <button
+                    class="btn btn-sm btn-outline-success me-2"
+                    (click)="restockProduct(product)">
+                    Restock +5
+                  </button>
+
+                  <button
+                    class="btn btn-sm btn-outline-danger"
+                    (click)="deleteProduct(product)">
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+
+              <tr>
+                <td
+                  colspan="6"
+                  class="text-center py-4 text-secondary">
+                  No products match the current search or category.
+                </td>
+              </tr>
+            }
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+}

@@ -1,0 +1,533 @@
+<div class="dashboard-page">
+
+  <!-- =========================
+       HEADER
+  ========================== -->
+  <div class="dashboard-header">
+
+    <div>
+      <div class="breadcrumb">
+        Inventory <span>/</span> Dashboard
+      </div>
+
+      <h1>Inventory Dashboard</h1>
+
+      <p>
+        Monitor your products, stock levels and inventory value.
+      </p>
+    </div>
+
+    <a
+      routerLink="/products"
+      class="manage-btn">
+      <span class="btn-icon">+</span>
+      Manage Products
+      <span class="arrow">→</span>
+    </a>
+
+  </div>
+
+
+  <!-- =========================
+       ERROR
+  ========================== -->
+  @if (store.errorMessage()) {
+
+    <div class="error-banner">
+
+      <div class="error-icon">
+        !
+      </div>
+
+      <div>
+        <strong>Unable to load inventory</strong>
+
+        <p>
+          {{ store.errorMessage() }}
+        </p>
+      </div>
+
+    </div>
+
+  }
+
+
+  <!-- =========================
+       LOADING
+  ========================== -->
+  @if (store.isLoading()) {
+
+    <div class="loading-container">
+
+      <div class="loading-spinner"></div>
+
+      <div>
+        <h3>Loading inventory...</h3>
+
+        <p>
+          Fetching the latest product information.
+        </p>
+      </div>
+
+    </div>
+
+  } @else {
+
+
+    <!-- =========================
+         STAT CARDS
+    ========================== -->
+    <div class="stats-grid">
+
+
+      <!-- Total Products -->
+      <div class="stat-card">
+
+        <div class="stat-top">
+
+          <div class="stat-icon products-icon">
+            📦
+          </div>
+
+          <span class="stat-label">
+            PRODUCTS
+          </span>
+
+        </div>
+
+        <div class="stat-value">
+          {{ totalProducts() }}
+        </div>
+
+        <div class="stat-footer">
+          <span class="trend positive">
+            ↑
+          </span>
+
+          <span>
+            Total products
+          </span>
+        </div>
+
+      </div>
+
+
+      <!-- Active Products -->
+      <div class="stat-card">
+
+        <div class="stat-top">
+
+          <div class="stat-icon active-icon">
+            ✓
+          </div>
+
+          <span class="stat-label">
+            ACTIVE
+          </span>
+
+        </div>
+
+        <div class="stat-value">
+          {{ activeProducts() }}
+        </div>
+
+        <div class="stat-footer">
+          <span class="trend positive">
+            ●
+          </span>
+
+          <span>
+            Active products
+          </span>
+        </div>
+
+      </div>
+
+
+      <!-- Low Stock -->
+      <div class="stat-card">
+
+        <div class="stat-top">
+
+          <div class="stat-icon stock-icon">
+            ⚠
+          </div>
+
+          <span class="stat-label">
+            LOW STOCK
+          </span>
+
+        </div>
+
+        <div class="stat-value">
+          {{ lowStockProducts() }}
+        </div>
+
+        <div class="stat-footer">
+
+          @if (lowStockProducts() > 0) {
+
+            <span class="trend warning">
+              !
+            </span>
+
+            <span>
+              Needs attention
+            </span>
+
+          } @else {
+
+            <span class="trend positive">
+              ✓
+            </span>
+
+            <span>
+              Stock looks good
+            </span>
+
+          }
+
+        </div>
+
+      </div>
+
+
+      <!-- Total Stock -->
+      <div class="stat-card">
+
+        <div class="stat-top">
+
+          <div class="stat-icon inventory-icon">
+            ◫
+          </div>
+
+          <span class="stat-label">
+            TOTAL STOCK
+          </span>
+
+        </div>
+
+        <div class="stat-value">
+          {{ totalStock() }}
+        </div>
+
+        <div class="stat-footer">
+          <span class="trend positive">
+            ↗
+          </span>
+
+          <span>
+            Units available
+          </span>
+        </div>
+
+      </div>
+
+
+      <!-- Inventory Value -->
+      <div class="stat-card value-card">
+
+        <div class="stat-top">
+
+          <div class="stat-icon value-icon">
+            ₹
+          </div>
+
+          <span class="stat-label">
+            INVENTORY VALUE
+          </span>
+
+        </div>
+
+        <div class="stat-value value">
+          {{ inventoryValue() | currency:'INR':'symbol':'1.0-0' }}
+        </div>
+
+        <div class="stat-footer">
+          <span class="trend positive">
+            ₹
+          </span>
+
+          <span>
+            Current inventory worth
+          </span>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- =========================
+         LOWER SECTION
+    ========================== -->
+    <div class="dashboard-grid">
+
+
+      <!-- Inventory Overview -->
+      <div class="overview-card">
+
+        <div class="section-header">
+
+          <div>
+            <h2>Inventory Overview</h2>
+
+            <p>
+              Quick summary of your current inventory.
+            </p>
+          </div>
+
+          <a
+            routerLink="/products"
+            class="view-link">
+            View Products →
+          </a>
+
+        </div>
+
+
+        <!-- Overview Items -->
+        <div class="overview-list">
+
+
+          <div class="overview-item">
+
+            <div class="overview-left">
+
+              <div class="mini-icon blue">
+                📦
+              </div>
+
+              <div>
+                <strong>Total Products</strong>
+
+                <span>
+                  Products in inventory
+                </span>
+              </div>
+
+            </div>
+
+            <strong class="overview-number">
+              {{ totalProducts() }}
+            </strong>
+
+          </div>
+
+
+          <div class="overview-item">
+
+            <div class="overview-left">
+
+              <div class="mini-icon green">
+                ✓
+              </div>
+
+              <div>
+                <strong>Active Products</strong>
+
+                <span>
+                  Currently active
+                </span>
+              </div>
+
+            </div>
+
+            <strong class="overview-number">
+              {{ activeProducts() }}
+            </strong>
+
+          </div>
+
+
+          <div class="overview-item">
+
+            <div class="overview-left">
+
+              <div class="mini-icon orange">
+                ⚠
+              </div>
+
+              <div>
+                <strong>Low Stock</strong>
+
+                <span>
+                  5 units or less
+                </span>
+              </div>
+
+            </div>
+
+            <strong
+              class="overview-number"
+              [class.danger-number]="lowStockProducts() > 0">
+              {{ lowStockProducts() }}
+            </strong>
+
+          </div>
+
+
+          <div class="overview-item">
+
+            <div class="overview-left">
+
+              <div class="mini-icon purple">
+                ₹
+              </div>
+
+              <div>
+                <strong>Inventory Value</strong>
+
+                <span>
+                  Total stock value
+                </span>
+              </div>
+
+            </div>
+
+            <strong class="overview-number">
+              {{ inventoryValue() | currency:'INR':'symbol':'1.0-0' }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- Stock Health -->
+      <div class="health-card">
+
+        <div class="section-header">
+
+          <div>
+            <h2>Stock Health</h2>
+
+            <p>
+              Current inventory condition.
+            </p>
+          </div>
+
+        </div>
+
+
+        <div class="health-content">
+
+          <div class="health-circle">
+
+            <div class="health-inner">
+
+              @if (lowStockProducts() === 0) {
+
+                <strong>Good</strong>
+                <span>Stock Health</span>
+
+              } @else {
+
+                <strong>
+                  {{ lowStockProducts() }}
+                </strong>
+
+                <span>
+                  Low Stock
+                </span>
+
+              }
+
+            </div>
+
+          </div>
+
+
+          <div class="health-details">
+
+            <div class="health-row">
+
+              <span>
+                <i class="dot green-dot"></i>
+                Active Products
+              </span>
+
+              <strong>
+                {{ activeProducts() }}
+              </strong>
+
+            </div>
+
+
+            <div class="health-row">
+
+              <span>
+                <i class="dot orange-dot"></i>
+                Low Stock
+              </span>
+
+              <strong>
+                {{ lowStockProducts() }}
+              </strong>
+
+            </div>
+
+
+            <div class="health-row">
+
+              <span>
+                <i class="dot blue-dot"></i>
+                Total Units
+              </span>
+
+              <strong>
+                {{ totalStock() }}
+              </strong>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <a
+          routerLink="/products"
+          class="health-button">
+          Manage Inventory
+          <span>→</span>
+        </a>
+
+      </div>
+
+    </div>
+
+
+    <!-- =========================
+         BOTTOM INFO
+    ========================== -->
+    <div class="info-banner">
+
+      <div class="info-icon">
+        ✨
+      </div>
+
+      <div>
+
+        <strong>
+          Inventory at a glance
+        </strong>
+
+        <p>
+          Your dashboard automatically updates when products
+          are added, edited, restocked or deleted.
+        </p>
+
+      </div>
+
+      <a routerLink="/products">
+        Open Inventory →
+      </a>
+
+    </div>
+
+  }
+
+</div>

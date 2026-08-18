@@ -1,0 +1,377 @@
+<div class="edit-page">
+
+  <!-- Page Header -->
+  <div class="page-header">
+
+    <div>
+      <div class="breadcrumb-text">
+        <span>Products</span>
+        <span class="separator">/</span>
+        <span>Edit</span>
+      </div>
+
+      <h1>Edit Product</h1>
+
+      <p>
+        Update product information, pricing and inventory details.
+      </p>
+    </div>
+
+    <a
+      routerLink="/products"
+      class="back-btn">
+      <span>←</span>
+      Back to Products
+    </a>
+
+  </div>
+
+
+  <!-- Error Message -->
+  @if (errorMessage()) {
+
+    <div class="alert-modern error-alert">
+
+      <div class="alert-icon">
+        !
+      </div>
+
+      <div>
+        <strong>Something went wrong</strong>
+        <p>{{ errorMessage() }}</p>
+      </div>
+
+    </div>
+
+  }
+
+
+  <!-- Loading -->
+  @if (isLoading()) {
+
+    <div class="loading-card">
+
+      <div class="spinner"></div>
+
+      <div>
+        <h3>Loading product...</h3>
+        <p>Please wait while we fetch the product details.</p>
+      </div>
+
+    </div>
+
+  }
+
+
+  @else if (productId !== null) {
+
+    <div class="edit-layout">
+
+      <!-- Main Form Card -->
+      <div class="form-card">
+
+        <div class="card-header-modern">
+
+          <div class="header-icon">
+            ✎
+          </div>
+
+          <div>
+            <h2>Product Details</h2>
+            <p>Make changes to your product information.</p>
+          </div>
+
+        </div>
+
+
+        <form
+          [formGroup]="productForm"
+          (ngSubmit)="save()">
+
+          <!-- Product Name -->
+          <div class="form-group-modern">
+
+            <label for="productName">
+              Product Name
+              <span>*</span>
+            </label>
+
+            <input
+              id="productName"
+              type="text"
+              class="modern-input"
+              formControlName="productName"
+              placeholder="Enter product name">
+
+            @if (
+              productForm.controls.productName.invalid &&
+              productForm.controls.productName.touched
+            ) {
+              <small class="validation-message">
+                Product name is required.
+              </small>
+            }
+
+          </div>
+
+
+          <!-- Category -->
+          <div class="form-group-modern">
+
+            <label for="category">
+              Category
+              <span>*</span>
+            </label>
+
+            <input
+              id="category"
+              type="text"
+              class="modern-input"
+              formControlName="category"
+              placeholder="e.g. Electronics">
+
+            @if (
+              productForm.controls.category.invalid &&
+              productForm.controls.category.touched
+            ) {
+              <small class="validation-message">
+                Category is required.
+              </small>
+            }
+
+          </div>
+
+
+          <!-- Price + Stock -->
+          <div class="form-row">
+
+            <div class="form-group-modern">
+
+              <label for="price">
+                Price
+                <span>*</span>
+              </label>
+
+              <div class="input-with-prefix">
+                <span>₹</span>
+
+                <input
+                  id="price"
+                  type="number"
+                  class="modern-input"
+                  formControlName="price"
+                  min="0.01"
+                  step="0.01"
+                  placeholder="0.00">
+              </div>
+
+              @if (
+                productForm.controls.price.invalid &&
+                productForm.controls.price.touched
+              ) {
+                <small class="validation-message">
+                  Price must be greater than 0.
+                </small>
+              }
+
+            </div>
+
+
+            <div class="form-group-modern">
+
+              <label for="stockQuantity">
+                Stock Quantity
+                <span>*</span>
+              </label>
+
+              <input
+                id="stockQuantity"
+                type="number"
+                class="modern-input"
+                formControlName="stockQuantity"
+                min="0"
+                placeholder="Enter quantity">
+
+              @if (
+                productForm.controls.stockQuantity.invalid &&
+                productForm.controls.stockQuantity.touched
+              ) {
+                <small class="validation-message">
+                  Stock quantity cannot be negative.
+                </small>
+              }
+
+            </div>
+
+          </div>
+
+
+          <!-- Active Status -->
+          <div class="status-card">
+
+            <div class="status-left">
+
+              <div class="status-icon">
+                ✓
+              </div>
+
+              <div>
+                <h3>Product Status</h3>
+
+                <p>
+                  Enable this product to make it available
+                  in your inventory.
+                </p>
+              </div>
+
+            </div>
+
+            <label class="switch">
+
+              <input
+                type="checkbox"
+                formControlName="isActive">
+
+              <span class="slider"></span>
+
+            </label>
+
+          </div>
+
+
+          <!-- Actions -->
+          <div class="form-actions">
+
+            <a
+              routerLink="/products"
+              class="cancel-btn">
+              Cancel
+            </a>
+
+            <button
+              type="submit"
+              class="update-btn"
+              [disabled]="productForm.invalid || isSaving()">
+
+              @if (isSaving()) {
+
+                <span class="button-spinner"></span>
+
+                Updating...
+
+              } @else {
+
+                <span>✓</span>
+
+                Update Product
+
+              }
+
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+
+
+      <!-- Right Side Information -->
+      <div class="side-column">
+
+        <!-- Product Preview -->
+        <div class="preview-card">
+
+          <div class="preview-top">
+
+            <span class="preview-label">
+              PRODUCT PREVIEW
+            </span>
+
+            @if (productForm.controls.isActive.value) {
+
+              <span class="active-badge">
+                Active
+              </span>
+
+            } @else {
+
+              <span class="inactive-badge">
+                Inactive
+              </span>
+
+            }
+
+          </div>
+
+
+          <div class="product-icon">
+            📦
+          </div>
+
+
+          <h3>
+            {{ productForm.controls.productName.value || 'Product Name' }}
+          </h3>
+
+          <p class="preview-category">
+            {{ productForm.controls.category.value || 'Category' }}
+          </p>
+
+
+          <div class="preview-price">
+            ₹{{ productForm.controls.price.value | number:'1.2-2' }}
+          </div>
+
+
+          <div class="stock-info">
+
+            <div>
+              <span>Available Stock</span>
+              <strong>
+                {{ productForm.controls.stockQuantity.value }}
+              </strong>
+            </div>
+
+            <div class="stock-line">
+              <div
+                class="stock-progress"
+                [style.width.%]="
+                  productForm.controls.stockQuantity.value > 100
+                    ? 100
+                    : productForm.controls.stockQuantity.value
+                ">
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- Tips -->
+        <div class="tips-card">
+
+          <div class="tips-icon">
+            💡
+          </div>
+
+          <div>
+            <h3>Quick Tip</h3>
+
+            <p>
+              Keep product names and categories
+              consistent to make inventory searches
+              easier.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  }
+
+</div>
